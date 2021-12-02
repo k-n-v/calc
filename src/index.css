@@ -43,7 +43,7 @@
   }
   
   .display span {
-    font-size: 14px;
+    font-size: 30px;
     color: #888;
   }
   
@@ -81,4 +81,8 @@
     flex:1 1 33.333%;
     max-width: 33.333%;
     background-color: var(--dark);
+  }
+
+  .digits button:first-child {
+    order: 1;
   }

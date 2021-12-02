@@ -2,34 +2,77 @@ import {useState} from 'react';
 
 function App() {
 
+const [number, setNumber] = useState('');
+const [storedNumber, setStoredNumber] = useState('');
+const [functionType, setFunctionType] = useState('');
 
-const [calc, setCalc] = useState('');
-const [result, setResult] = useState('');
-
-
-const operators = ['/', '*', '+', '-', '.'];
-
-const updateCalc = value => {
-
-  if(
-    operators.includes(value) && calc === '' || 
-    operators.includes(value) && operators.includes(calc.slice(-1))
-  ) {
-    return;
+const operators = ['/', '*', '+', '-'];
+//проверка вводимых данных
+const displayValue = num => {
+  if((!number.includes('') || num !== '.') && number.length < 8){
+    setNumber(`${(number + num).replace(/^0+/, '')}`);
   }
+};
 
-  setCalc(calc + value);
-  setResult()
+//сохранение введенных данных
+const SetStoredValue = () => {
+  setStoredNumber(number);
+  setNumber('');
 }
 
 
+//матем. вычисления
+const doMath = () => {
+  if (number && storedNumber) {
+    switch (functionType) {
+        case '+':
+        setStoredNumber(`${Math.round(`${(parseFloat(storedNumber) + parseFloat(number)) * 100}`) / 100}`);
+        break;
+        case '-':
+        setStoredNumber(`${Math.round(`${(parseFloat(storedNumber) - parseFloat(number)) * 100}`) / 100}`);
+        break; 
+        case '/':
+        setStoredNumber(`${Math.round(`${(parseFloat(storedNumber) / parseFloat(number)) * 100}`) / 100}`);
+        break;
+        case '*':
+        setStoredNumber(`${Math.round(`${(parseFloat(storedNumber) * parseFloat(number)) * 100}`) / 100}`);
+        break;
+        default:
+        break;  
+    }
+    setNumber('');
+  }
+};
 
+
+
+
+
+const SetCalcFunction = type => {
+  if(number) {
+    setFunctionType(type);
+    SetStoredValue();
+  }
+  if(storedNumber) {
+    setFunctionType(type);
+  }
+};
+
+
+//очистка
+const clearValue = () => {
+  setNumber('');
+  setStoredNumber('');
+  setFunctionType('');
+}
+
+
+//цыфровые кнопки
 const createDigits = () => {
   const digits = [];
-
-  for(let i = 1; i < 10; i++) {
-    digits.puch(
-      <button onClick={() => updateCalc(i.toString())} key={i}>
+  for(let i = 0; i < 10; i++) {
+    digits.push(
+      <button onClick={() => displayValue(i.toString())} key={i}>
         {i}
       </button>
     )
@@ -37,23 +80,39 @@ const createDigits = () => {
   return digits;
 }
 
+//удаление символов
+const deleteLast =() => {
+  if(number !== '') {
+    const deletedNumber = number.slice(0, number.length -1);
+    setNumber(deletedNumber);
+  }
+}
+
 
 
   return (
     <div className="App">
       <div className="calculator">
-        <div className="display"></div>
+        <div className="display">
+          <span>
+            {!number.length && !storedNumber ?
+             '0' : number || storedNumber}
+          </span>
+        </div>
         <div className="operators">
-          <button>/</button>
-          <button>*</button>
-          <button>+</button>
-          <button>-</button>
-          <button>DEL</button>
+          {operators.map((item, index) => <button 
+          key={index} 
+          onClick={() => SetCalcFunction(item)}>
+            {item}
+            
+            </button> )}
+          <button onClick={() => clearValue()}>C</button>
+          <button onClick={() => deleteLast()}>DEL</button>
         </div>
         <div className="digits">
-          {createDigits()}
-        <button>0</button>
+           {createDigits()}
         <button>.</button>
+        <button onClick={() => doMath()}>=</button>
         </div>
       </div>
     </div>
