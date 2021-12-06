@@ -7,9 +7,10 @@ const [storedNumber, setStoredNumber] = useState('');
 const [functionType, setFunctionType] = useState('');
 
 const operators = ['/', '*', '+', '-'];
+const point = '.';
 //проверка вводимых данных
 const displayValue = num => {
-  if((!number.includes('') || num !== '.') && number.length < 8){
+ if((!number.includes('') || num !== '.') && number.length < 8){
     setNumber(`${(number + num).replace(/^0+/, '')}`);
   }
 };
@@ -80,6 +81,16 @@ const createDigits = () => {
   return digits;
 }
 
+const createOperators = () => {
+  const operator = operators.map((item, index) => <button 
+    key={index} 
+    onClick={() => SetCalcFunction(item.toString())}>
+      {item}
+      </button> );
+      return operator;
+}
+
+
 //удаление символов
 const deleteLast =() => {
   if(number !== '') {
@@ -100,18 +111,14 @@ const deleteLast =() => {
           </span>
         </div>
         <div className="operators">
-          {operators.map((item, index) => <button 
-          key={index} 
-          onClick={() => SetCalcFunction(item)}>
-            {item}
-            
-            </button> )}
+          {createOperators()}
           <button onClick={() => clearValue()}>C</button>
           <button onClick={() => deleteLast()}>DEL</button>
         </div>
         <div className="digits">
            {createDigits()}
-        <button>.</button>
+         <button onClick={() => displayValue(point)}>.</button>
+            
         <button onClick={() => doMath()}>=</button>
         </div>
       </div>
